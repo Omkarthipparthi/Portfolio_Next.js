@@ -2,7 +2,6 @@
 
 import { motion } from 'framer-motion'
 import { Github, Linkedin, Mail, Twitter } from 'lucide-react'
-import Link from 'next/link'
 
 const socialLinks = [
   {

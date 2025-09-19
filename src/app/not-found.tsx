@@ -23,7 +23,7 @@ export default function NotFound() {
           variants={fadeInUp}
           className="max-w-[42rem] text-xl text-gray-600 dark:text-gray-300"
         >
-          Sorry, the page you're looking for doesn't exist.
+          Sorry, the page you&apos;re looking for doesn&apos;t exist.
         </motion.p>
         <motion.div variants={fadeInUp}>
           <Link

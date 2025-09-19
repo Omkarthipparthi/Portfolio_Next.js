@@ -75,7 +75,10 @@ export function ProjectCarousel({ projects }: ProjectCarouselProps) {
   }, [navigate])
 
   const handleDragEnd = useCallback(
-    (e: any, { offset, velocity }: { offset: { x: number }; velocity: { x: number } }) => {
+    (
+      e: MouseEvent | TouchEvent | PointerEvent,
+      { offset, velocity }: { offset: { x: number }; velocity: { x: number } }
+    ) => {
       setIsDragging(false)
 
       if (Math.abs(velocity.x) > 500 || Math.abs(offset.x) > 100) {

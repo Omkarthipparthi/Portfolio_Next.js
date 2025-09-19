@@ -28,7 +28,7 @@ export default function MainContent() {
             variants={fadeInUp}
             className="text-4xl font-bold sm:text-5xl md:text-6xl"
           >
-            Hi, I'm{' '}
+            Hi, I&apos;m{' '}
             <span className="bg-gradient-to-r from-brand-600 to-blue-600 bg-clip-text text-transparent">
               Omkar Thipparthi
             </span>

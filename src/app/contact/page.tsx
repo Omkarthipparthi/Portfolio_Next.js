@@ -47,7 +47,7 @@ export default function ContactPage() {
       <Section>
         <h1 className="text-4xl font-bold md:text-5xl">Get in Touch</h1>
         <p className="mt-4 max-w-2xl text-lg text-gray-600 dark:text-gray-300">
-          I'm always open to discussing new projects, opportunities, or just having
+          I&apos;m always open to discussing new projects, opportunities, or just having
           a chat about technology and development.
         </p>
 
@@ -91,7 +91,7 @@ export default function ContactPage() {
               </div>
             </motion.button>
             <p className="mt-4 text-sm text-gray-500">
-              Your privacy is important. This form doesn't store any data.
+              Your privacy is important. This form doesn&apos;t store any data.
             </p>
           </div>
         </div>

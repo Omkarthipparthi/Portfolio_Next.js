@@ -57,44 +57,7 @@ void main(){
 }
 `;
 
-const tunnelVertex = `
-varying vec2 vUv;
-void main(){
-  vUv = uv;
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-}
-`;
-
-const tunnelFragment = `
-precision highp float;
-uniform float time;
-varying vec2 vUv;
-
-float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7))) * 43758.5453123); }
-float noise(vec2 p){
-  vec2 i = floor(p);
-  vec2 f = fract(p);
-  float a = hash(i);
-  float b = hash(i + vec2(1.0, 0.0));
-  float c = hash(i + vec2(0.0, 1.0));
-  float d = hash(i + vec2(1.0, 1.0));
-  vec2 u = f*f*(3.0 - 2.0*f);
-  return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
-}
-
-void main(){
-  float u = vUv.x;
-  float v = vUv.y;
-  float scroll = fract(v - time * 0.25);
-  float angle = u * 6.2831853;
-  float bands = sin(angle * 18.0 + time * 1.6 + scroll * 90.0);
-  float n = noise(vec2(u * 9.0, scroll * 10.0 + time * 0.25));
-  float glow = smoothstep(0.6, 1.0, bands + n * 0.5);
-  vec3 base = mix(vec3(0.08, 0.10, 0.16), vec3(0.45, 0.85, 1.0), glow);
-  float fade = smoothstep(0.0, 0.1, v) * (1.0 - smoothstep(0.9, 1.0, v));
-  gl_FragColor = vec4(base * (0.45 + glow * 1.25) * fade, 1.0);
-}
-`;
+// Removed unused tunnel shaders
 
 interface BlackHoleEHTProps {
   onTransitionComplete: () => void;
@@ -107,16 +70,8 @@ export default function BlackHoleEHT({ onTransitionComplete }: BlackHoleEHTProps
   useEffect(() => {
     if (!mountRef.current) return;
 
-    let renderer: THREE.WebGLRenderer,
-        scene: THREE.Scene,
-        camera: THREE.PerspectiveCamera,
-        composer: EffectComposer,
-        animationId: number;
-    let stars: THREE.Points,
-        ring: THREE.Mesh,
-        bh: THREE.Mesh,
-        ringMat: THREE.ShaderMaterial,
-        bloomPass: UnrealBloomPass;
+    let renderer: THREE.WebGLRenderer;
+    let animationId: number;
 
     const getSize = () => ({ w: mountRef.current!.clientWidth, h: mountRef.current!.clientHeight });
 
@@ -133,10 +88,10 @@ export default function BlackHoleEHT({ onTransitionComplete }: BlackHoleEHTProps
     renderer.domElement.style.display = "block";
     mountRef.current.appendChild(renderer.domElement);
 
-    scene = new THREE.Scene();
+    const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x000000);
 
-    camera = new THREE.PerspectiveCamera(60, w / h, 0.1, 2000);
+    const camera = new THREE.PerspectiveCamera(60, w / h, 0.1, 2000);
     camera.position.set(0, 0, 35);
     camera.lookAt(0, 0, 35);
 
@@ -157,12 +112,12 @@ export default function BlackHoleEHT({ onTransitionComplete }: BlackHoleEHTProps
     }
     starGeo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
     const starMat = new THREE.PointsMaterial({ size: 0.028, sizeAttenuation: true, color: 0xffffff, transparent: true, opacity: 0.75 });
-    stars = new THREE.Points(starGeo, starMat);
+    const stars = new THREE.Points(starGeo, starMat);
     scene.add(stars);
 
     // === Black hole shadow core ===
     const coreMat = new THREE.MeshPhysicalMaterial({ color: 0x000000, roughness: 1.0, transmission: 0.0 });
-    bh = new THREE.Mesh(new THREE.SphereGeometry(1.12, 128, 128), coreMat);
+    const bh = new THREE.Mesh(new THREE.SphereGeometry(1.12, 128, 128), coreMat);
     scene.add(bh);
 
     // subtle lensing halo
@@ -176,7 +131,7 @@ export default function BlackHoleEHT({ onTransitionComplete }: BlackHoleEHTProps
     // === Accretion disk (orangish-yellow, asymmetric brightness) ===
     const ringGeo = new THREE.RingGeometry(1.35, 3.05, 512, 1);
     ringGeo.rotateX(Math.PI / 2.2); // slight tilt
-    ringMat = new THREE.ShaderMaterial({
+    const ringMat = new THREE.ShaderMaterial({
       uniforms: { time: { value: 0 } },
       vertexShader: ringVertex,
       fragmentShader: ringFragment,
@@ -185,7 +140,7 @@ export default function BlackHoleEHT({ onTransitionComplete }: BlackHoleEHTProps
       depthWrite: false,
       side: THREE.DoubleSide,
     });
-    ring = new THREE.Mesh(ringGeo, ringMat);
+    const ring = new THREE.Mesh(ringGeo, ringMat);
     ring.position.z = -0.05;
     scene.add(ring);
 
@@ -198,9 +153,9 @@ export default function BlackHoleEHT({ onTransitionComplete }: BlackHoleEHTProps
     scene.add(photonRing);
 
     // === Postprocessing ===
-    composer = new EffectComposer(renderer);
+    const composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
-    bloomPass = new UnrealBloomPass(new THREE.Vector2(w, h), 1.35, 0.6, 0.0);
+    const bloomPass = new UnrealBloomPass(new THREE.Vector2(w, h), 1.35, 0.6, 0.0);
     composer.addPass(bloomPass);
 
     // (Removed wormhole tunnel to keep only the orange black hole)
@@ -277,7 +232,7 @@ export default function BlackHoleEHT({ onTransitionComplete }: BlackHoleEHTProps
     <div ref={mountRef} className="fixed inset-0 bg-black">
       {!webglOk && (
         <div className="absolute inset-0 flex items-center justify-center text-white">
-          Your browser doesn't support WebGL.
+          Your browser doesn&apos;t support WebGL.
         </div>
       )}
     </div>

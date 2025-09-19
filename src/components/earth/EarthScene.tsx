@@ -1,6 +1,7 @@
 'use client'
+/* eslint-disable react/no-unknown-property */
 
-import React, { useRef, useEffect, Suspense } from 'react'
+import React, { useRef, Suspense } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, Html, useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
@@ -52,9 +53,10 @@ function Pin({ lat = 39.7783, lng = -119.4179, radius, center }:{ lat?: number; 
       else groupRef.current.lookAt(0, 0, 0)
       groupRef.current.rotateX(Math.PI)
     }
-  }, [])
+  }, [center])
 
   return (
+    <>
     <group ref={groupRef} position={[x, y, z] as unknown as [number, number, number]}>
       <mesh>
         <coneGeometry args={[0.015, 0.08, 12]} />
@@ -65,13 +67,14 @@ function Pin({ lat = 39.7783, lng = -119.4179, radius, center }:{ lat?: number; 
         <meshStandardMaterial color={accent} />
       </mesh>
     </group>
+    </>
   )
 }
 
 function Globe() {
   const ref = useRef<THREE.Group | null>(null)
   // Load the provided low-poly glTF
-  const gltf = useGLTF('/og/low_poly_earth.gltf') as any
+  const gltf = useGLTF('/og/low_poly_earth.gltf') as unknown as { scene: THREE.Object3D }
   const radiusRef = useRef<number>(0)
   const centerRef = useRef<THREE.Vector3 | null>(null)
 
@@ -96,7 +99,9 @@ function Globe() {
 
   return (
     <group ref={ref} scale={[1.2, 1.2, 1.2]}>
-      {gltf && <primitive object={gltf.scene || gltf.scene} />}
+      {/* eslint-disable react/no-unknown-property */}
+      {gltf && <primitive object={gltf.scene} />}
+      {/* eslint-enable react/no-unknown-property */}
       {/* Attach pin as child so it follows model transforms and orientation */}
       <Pin
         // pass computed radius so Pin positions itself using model bounds
@@ -119,7 +124,9 @@ export function EarthScene({ className }: Props) {
         <div className="flex h-80 items-center justify-center">3D globe disabled (reduced motion)</div>
       ) : (
         <Canvas camera={{ position: [0, 0, 2.5], fov: 45 }}>
+          {/* eslint-disable-next-line react/no-unknown-property */}
           <ambientLight intensity={0.6} />
+          {/* eslint-disable-next-line react/no-unknown-property */}
           <directionalLight position={[5, 3, 5]} intensity={0.8} />
           <Suspense fallback={<Html>Loading globe...</Html>}>
             <Globe />

@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+  /* Theme tokens */
+  --accent: 99 92 255; /* rgb parts for brand-600 fallback */
+  --accent-hex: #635cff;
+    --sb-track: hsl(210 40% 96% / 0.25);
+    --sb-thumb: linear-gradient(180deg, hsl(262 83% 58%), hsl(217 91% 60%));
+  }
+
+  .dark {
+  --accent: 99 92 255; /* same as light for now */
+    --sb-track: hsl(224 71% 4% / 0.35);
+  }
+
+  ::selection {
+    @apply bg-brand-500/30;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply backdrop-blur-md border border-white/35 shadow-glass;
+    background: color-mix(in oklab, white 10%, transparent);
+  }
+
+  .dark .glass {
+    background: color-mix(in oklab, black 30%, transparent);
+    border-color: color-mix(in oklab, white 12%, transparent);
+  }
+}
+
+/* Custom Scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(262 83% 58%) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--sb-track);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
